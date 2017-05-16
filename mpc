@@ -1,0 +1,67 @@
+library(readr)
+data1 <- read_csv("~/Thesis/ria/v1/data.csv")
+
+#infodata
+
+# id_kecamatan
+Kecamatan <- unique(data1$Kecamatan)
+
+# hitung data desa per kecamatan 
+DesaPerKecamatan <- data.frame(id_kecamatan = c(NULL), jumlah = c(NULL))
+
+
+for(i in Kecamatan){
+  s <- data1[data1$Kecamatan==Kecamatan[i],]
+  DesaPerKecamatan <- rbind(DesaPerKecamatan, 
+                            c(i, length(unique(s$Desa))))
+}
+colnames(DesaPerKecamatan) <- c("id_kecamatan", "jumlah")
+
+# fungsi untuk menghitung jumlah desa untuk kecamatan x
+f_totaldesa <- function(x){
+  s <- data1[data1$Kecamatan==x,]
+  length(unique(s$Desa))
+}
+
+# fungsi untuk menghitung jumlah blok sensus untuk desa x di kecamatan y
+f_totalbloksensus <- function(x,y){
+  s <- data1[data1$Kecamatan==x,]
+  #length(unique(s$Desa))
+  
+}
+
+
+#M1 : SRS, dengan unit sampling rumah tangga
+f.M1 <- function(n){
+  sample.M1 <- matrix(nrow = n, ncol = n1)
+  for(i in 1:n1){
+    sample.M1[,i] <- sample(x = data1$Exp_cap, size = n)
+  }
+  return(sample.M1)
+}
+
+HASIL <- f.M1(200)
+
+#M2 
+n <- 50
+n1 <- 100
+x1 <- n/length(Kecamatan)
+sample.M2 <- matrix(nrow = n, ncol = n1)
+for(j in 1:n1){
+  #data3 <- c(NULL)
+  for(i in Kecamatan){
+    k <- nrow(data1[data1$Kecamatan==i,])/x1
+    x2 <- seq(k, nrow(data1[data1$Kecamatan==i,]), length = x1)
+    sample.M2[x1*(i-1)+1:x1,j] <- matrix(data1[x2,10], nrow = x1, ncol = 1)
+    #data3 <- rbind(data3, data1[x2,10])
+  }
+}
+# ini fungsi sequence sendiri
+#x2 <- c(k)
+#n1 <- k
+#for(i in 1:(x1-1)){
+#  x2 <- cbind(x2, n1+k)
+#  n1 = n1+k
+#}
+
+
